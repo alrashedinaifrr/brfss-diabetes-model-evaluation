@@ -58,3 +58,36 @@ Source code, dependency specifications, and reproducibility instructions will be
 Centers for Disease Control and Prevention (CDC), Behavioral Risk Factor Surveillance System (BRFSS).
 
 https://www.cdc.gov/brfss/
+## Visual Results
+
+The following figures summarize the predictive performance, subgroup differences, and exploratory statistical analyses.
+
+### 1. Model Performance
+
+![Model Performance](01_model_performance.png)
+
+### 2. Weighted ROC Curves
+
+![Weighted ROC Curves](02_weighted_roc.png)
+
+### 3. Weighted Calibration
+
+![Weighted Calibration](03_weighted_calibration.png)
+
+### 4. BMI Subgroup AUROC
+
+![BMI Subgroup AUROC](04_bmi_subgroup_auroc.png)
+
+### 5. AUROC Gap Decomposition
+
+![AUROC Gap Decomposition](05_auroc_decomposition.png)
+
+### 6. Age-Binning Sensitivity
+
+![Age-Binning Sensitivity](06_age_binning_sensitivity.png)
+
+### 7. Exploratory Uncertainty
+
+![Exploratory Uncertainty](07_gap_reduction_uncertainty.png)
+
+**Statistical note:** Uncertainty intervals are exploratory and have not been established as fully design-valid BRFSS confidence intervals.
