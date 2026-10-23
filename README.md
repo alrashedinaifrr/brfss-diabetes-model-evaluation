@@ -1,93 +1,76 @@
 # Diabetes Classification and Subgroup AUROC Analysis
 
-## Project Overview
+Reproducible applied statistical analysis of **self-reported prevalent diabetes** using the CDC Behavioral Risk Factor Surveillance System (BRFSS), with 2024 data for training and 2025 data for evaluation.
 
-This project investigates diabetes classification and subgroup discrimination using CDC Behavioral Risk Factor Surveillance System (BRFSS) data from 2024 and 2025.
+> **Research scope:** This is cross-sectional classification of a survey-reported outcome, **not** prediction of future diabetes onset, a clinical diagnostic model, a causal analysis, or an established fairness intervention.
 
-A logistic regression model was trained on 2024 data and evaluated on 2025 data. The analysis examines survey-weighted predictive performance, age-related AUROC decomposition, BMI subgroup differences, and the consequences of excluding age from the prediction model.
+## Project at a glance
 
-## Dataset
+| Item | Description |
+|---|---|
+| Training cohort | BRFSS 2024; 441,934 eligible records |
+| Evaluation cohort | BRFSS 2025; 342,539 eligible records |
+| Primary model | Logistic regression with median imputation and one-hot encoding |
+| Predictors | Age group, BMI, sex, exercise, smoking history, education |
+| Evaluation | Survey-weighted AUROC and Brier score; exploratory subgroup analyses |
+| Implementation | Python, scikit-learn, pandas, NumPy, SciPy |
 
-- **Training:** BRFSS 2024 — 441,934 eligible observations.
-- **Evaluation:** BRFSS 2025 — 342,539 eligible observations.
-- **Outcome:** Self-reported prevalent diabetes.
-- **Predictors:** Age group, BMI, sex, exercise, smoking history, and education.
+## Main results
 
-The raw datasets are available from the CDC and are not included in this repository.
-
-## Key Results
-
-| Metric | Full Model | No-Age Model |
+| Metric (2025 evaluation, all eligible) | Full model | Model without age |
 |---|---:|---:|
-| Weighted AUROC | 0.795546 | 0.687464 |
-| Weighted Brier Score | 0.098758 | 0.108311 |
+| Weighted AUROC | **0.795546** | 0.687464 |
+| Weighted Brier score | **0.098758** | 0.108311 |
 
-For participants with BMI below 25 or at least 30 and valid age information, the AUROC gap decreased from 0.060787 to 0.029308 after excluding age.
+On the **age- and BMI-complete extreme-BMI subgroup** (BMI <25 versus BMI >=30; N=198,129), the weighted AUROC gap decreased from **0.060787** to **0.029308** when age was excluded: an observed reduction of **0.031479 (about 51.8%)**. The reduced gap came with a substantial decline in overall discrimination. It should **not** be interpreted as proof of causal age effects, fairness improvement, or clinical benefit.
 
-This represents an approximately **51.8% reduction in the observed subgroup AUROC gap**, accompanied by lower overall discrimination.
+An exact within-age/between-age case-control-pair AUROC accounting identity was applied to the BMI gap. With 13 age categories, the full-model gap was partitioned into within-age discrimination (**0.000205**), between-age discrimination (**0.058936**) and pair-composition (**0.001646**). These contributions depend on the age partition and decomposition convention; they are not causal attributions.
 
-## Methods
+## Visual results
 
-- Logistic regression and missing-data handling
-- Survey-weighted performance evaluation
-- Within-age and between-age AUROC decomposition
-- BMI subgroup comparisons
-- Predictor ablation
-- Bootstrap sensitivity and training stability analyses
+The following images are maintained at the repository root:
 
-## Interpretation and Limitations
+![Full versus no-age model performance](01_model_performance.png)
 
-The AUROC decomposition is an exact mathematical accounting identity, not a causal attribution method.
+![Survey-weighted ROC curves](02_weighted_roc.png)
 
-The uncertainty estimates are exploratory and have not been established as fully design-valid confidence intervals for BRFSS.
+![Survey-weighted calibration by prediction decile](03_weighted_calibration.png)
 
-The 2025 evaluation dataset was reused during project development and is not an untouched final test set.
+![BMI subgroup AUROC](04_bmi_subgroup_auroc.png)
 
-The analysis concerns self-reported prevalent diabetes rather than future disease incidence.
+![Exact AUROC gap decomposition](05_auroc_decomposition.png)
 
-## Research Status
+![Age-binning sensitivity](06_age_binning_sensitivity.png)
 
-This repository documents an applied statistical and machine-learning investigation. Methodological novelty and journal-publication readiness have not been established.
+![Exploratory uncertainty interval](07_gap_reduction_uncertainty.png)
 
-## Reproducibility
+## Reproduce the core model
 
-Source code, dependency specifications, and reproducibility instructions will be organized in this repository. The original CDC datasets must be obtained separately.
+The CDC raw data are **not included**. Obtain the BRFSS 2024 and 2025 SAS transport files from the CDC and place them under a local directory as `LLCP2024.XPT` and `LLCP2025.XPT` (remove any trailing spaces from filenames).
 
-## Data Source
+From the repository root:
 
-Centers for Disease Control and Prevention (CDC), Behavioral Risk Factor Surveillance System (BRFSS).
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q test_v11.py
+python run_v11.py --data-dir /path/to/cdc_xpt --output-dir results_v11
+```
 
-https://www.cdc.gov/brfss/
-## Visual Results
+The script writes `common_cohort_comparison_2025.csv` and `.json`. Select `strategy=median` and `cohort=all_eligible` to compare with the reported **0.795546 weighted AUROC** and **0.098758 weighted Brier**. If the source files are in a `src/` folder instead, prefix the Python filenames with `src/`.
 
-The following figures summarize the predictive performance, subgroup differences, and exploratory statistical analyses.
+**Independent execution check (23 October 2026):** A fresh copy of the uploaded GitHub repository was executed in Google Colab using the original CDC files. The run completed successfully with training N=441,934 and evaluation N=342,539, and reproduced both primary weighted metrics to six decimal places. Two basic pipeline tests passed; this is **not** exhaustive verification of every notebook analysis.
 
-### 1. Model Performance
+## Interpretation and limitations
 
-![Model Performance](01_model_performance.png)
+- The 2025 data were evaluated repeatedly during development; they are not an untouched external final test set.
+- Confidence intervals and bootstrap estimates for subgroup decompositions are **exploratory**; full validity under the complex BRFSS sample design has not been established.
+- BRFSS uses a complex survey design, and weighted point estimates alone do not validate variance estimates.
+- Complete-case comparisons use different sample definitions; compare imputation methods on the common cohort where appropriate.
+- The AUROC decomposition is an exact algebraic identity, not evidence of methodological novelty or causal mechanisms.
+- The project has not demonstrated clinical utility, prospective generalization, or publication-level methodological originality.
 
-### 2. Weighted ROC Curves
+For fuller methodological details and verification boundaries, see [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md) and [VALIDATION_STATUS.md](VALIDATION_STATUS.md).
 
-![Weighted ROC Curves](02_weighted_roc.png)
+## Data source
 
-### 3. Weighted Calibration
-
-![Weighted Calibration](03_weighted_calibration.png)
-
-### 4. BMI Subgroup AUROC
-
-![BMI Subgroup AUROC](04_bmi_subgroup_auroc.png)
-
-### 5. AUROC Gap Decomposition
-
-![AUROC Gap Decomposition](05_auroc_decomposition.png)
-
-### 6. Age-Binning Sensitivity
-
-![Age-Binning Sensitivity](06_age_binning_sensitivity.png)
-
-### 7. Exploratory Uncertainty
-
-![Exploratory Uncertainty](07_gap_reduction_uncertainty.png)
-
-**Statistical note:** Uncertainty intervals are exploratory and have not been established as fully design-valid BRFSS confidence intervals.
+CDC Behavioral Risk Factor Surveillance System (BRFSS): https://www.cdc.gov/brfss/
