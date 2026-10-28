@@ -1,18 +1,31 @@
 # Reproducibility status
 
-## What is included
-- `Health_Risk_Project_Analysis.ipynb`: 73-cell Colab analysis history, with all saved cell outputs and execution counts removed. Contains development steps from V11 through V16.7 and figure generation.
-- `requirements.txt`: initial Python dependency list, **not version-pinned or validated**.
+## Supported clean run
 
-## Not yet included
-- External source scripts and source ZIPs referenced by the notebook, including `run_v11.py`, `visualize_v12.py`, `audit_v13.py` and their dependencies.
-- CDC BRFSS 2024 and 2025 XPT source datasets; download these from CDC BRFSS.
-- Intermediate private respondent-level predictions and other derived intermediate files.
+The repository contains one maintained script for the core analysis:
 
-## Important caveats
-The notebook includes sequential, exploratory Colab commands, uploads, paths rooted at `/content/health_project`, R survey validation commands, and dependencies on earlier outputs. Running it top to bottom in a fresh runtime is **not supported yet**. Its cells document the analysis history but do not independently reproduce all published figures without the missing scripts and intermediate artifacts.
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q test_v11.py
+python run_v11.py --data-dir /path/to/cdc_xpt --output-dir results_v11
+```
 
-2025 was repeatedly used during development. Uncertainty estimates are exploratory, not established as fully survey-design-valid. The study concerns self-reported prevalent diabetes, not future incidence.
+The input directory must contain CDC BRFSS `LLCP2024.XPT` and `LLCP2025.XPT`. The raw CDC files are not redistributed here. The script creates:
 
-## Next action
-Export the source directory from Colab (`/content/health_project/v13/health_risk_portfolio_v13/src`) and the other source directories used by V11/V12; review and include them, then construct a single clean pipeline with explicit raw-data download and derived-data generation steps.
+- `analysis_2025.json` and `run_metadata.json`
+- CSV tables for model comparison, decision thresholds, calibration, BMI subgroups, and AUROC decomposition
+- Four analysis figures under `results_v11/figures/`
+
+The run manifest records SHA-256 hashes, row counts, Python version, and installed library versions. This identifies the source files and runtime used for a given local run.
+
+## Notebook scope
+
+`Health_Risk_Project_Analysis.ipynb` preserves the 73-cell Colab development history from V11 through V16.7. It contains cells dependent on uploaded archives, intermediate private predictions, R survey tools, and earlier outputs. It is not designed to run top-to-bottom in a fresh runtime. Use `run_v11.py` for the maintained clean pipeline; the notebook is an analysis history, not the canonical run command.
+
+## Boundaries
+
+- BRFSS 2025 was repeatedly used during development, so it is not an untouched final test wave.
+- The current pipeline reports weighted point estimates but no design-correct confidence intervals. Validation of the PSU/stratum variance method remains open.
+- Earlier notebook bootstrap intervals are exploratory and are not regenerated as design-valid uncertainty by the clean runner.
+- The study classifies self-reported prevalent diabetes; it does not predict future incidence or establish clinical utility.
+- The new pipeline has been tested on synthetic data for software flow and figures, but not rerun on the original XPT files in this workspace.

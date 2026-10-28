@@ -12,7 +12,8 @@ Reproducible applied statistical analysis of **self-reported prevalent diabetes*
 | Evaluation cohort | BRFSS 2025; 342,539 eligible records |
 | Primary model | Logistic regression with median imputation and one-hot encoding |
 | Predictors | Age group, BMI, sex, exercise, smoking history, education |
-| Evaluation | Survey-weighted AUROC and Brier score; exploratory subgroup analyses |
+| Comparisons | Median vs. missingness-indicator vs. complete-case; full model vs. no-age ablation; survey-weighted training sensitivity |
+| Evaluation | Weighted and unweighted discrimination/calibration, threshold scenarios, BMI subgroups, exact age-pair AUROC decomposition |
 | Implementation | Python, scikit-learn, pandas, NumPy, SciPy |
 
 ## Main results
@@ -44,6 +45,10 @@ The following images are maintained at the repository root:
 
 ![Exploratory uncertainty interval](07_gap_reduction_uncertainty.png)
 
+## Run in Google Colab
+
+Open [Health_Risk_Project_Analysis.ipynb](Health_Risk_Project_Analysis.ipynb) in Colab. The notebook clones the public repository, mounts Drive for the CDC XPT files, runs tests and analysis, displays figures, and downloads a results archive.
+
 ## Reproduce the core model
 
 The CDC raw data are **not included**. Obtain the BRFSS 2024 and 2025 SAS transport files from the CDC and place them under a local directory as `LLCP2024.XPT` and `LLCP2025.XPT` (remove any trailing spaces from filenames).
@@ -56,9 +61,21 @@ python -m pytest -q test_v11.py
 python run_v11.py --data-dir /path/to/cdc_xpt --output-dir results_v11
 ```
 
-The script writes `common_cohort_comparison_2025.csv` and `.json`. Select `strategy=median` and `cohort=all_eligible` to compare with the reported **0.795546 weighted AUROC** and **0.098758 weighted Brier**. If the source files are in a `src/` folder instead, prefix the Python filenames with `src/`.
+The script writes `analysis_2025.json`, `model_comparison_2025.csv`, `decision_analysis_2025.csv`, `bmi_subgroup_auroc_2025.csv`, `bmi_gap_decomposition_2025.csv`, `calibration_deciles_2025.csv`, and `run_metadata.json`; it also creates four figures in `results_v11/figures/`. Select `model=full`, `strategy=median`, and `cohort=all_eligible` to compare with the recorded **0.795546 weighted AUROC** and **0.098758 weighted Brier**. The no-age ablation is evaluated on the same all-eligible cohort. Common-complete-case comparisons use one shared complete evaluation cohort.
+
+The decision table reports survey-weighted sensitivity, specificity, precision, negative predictive value, flagged fraction, and decision-curve net benefit at thresholds supplied with `--thresholds` (default: 0.05 through 0.50 in 0.05 increments) for the full, no-age, and survey-weighted-training models. These are **scenario comparisons**, not recommended screening cutoffs. A useful threshold requires a defined intervention, its benefits and harms, and operational capacity. Weighted point estimates do not provide design-correct confidence intervals, and this analysis does not establish clinical utility.
+
+The model comparison output also includes weighted mean predicted risk and weighted observed prevalence. Their difference is a useful population-level calibration check, but it is not a substitute for design-aware calibration uncertainty.
+
+Example with a shorter threshold grid:
+
+```bash
+python run_v11.py --data-dir /path/to/cdc_xpt --output-dir results_v11 --thresholds 0.05 0.10 0.20 0.30
+```
 
 **Independent execution check (23 October 2026):** A fresh copy of the uploaded GitHub repository was executed in Google Colab using the original CDC files. The run completed successfully with training N=441,934 and evaluation N=342,539, and reproduced both primary weighted metrics to six decimal places. Two basic pipeline tests passed; this is **not** exhaustive verification of every notebook analysis.
+
+**Current code checks (28 October 2026):** Six local tests pass, including weighted threshold metrics, an exact age-pair decomposition identity, and evaluation outputs. A synthetic smoke test of figure generation is recorded in the validation status. The CDC raw files are not present in this repository, so the new pipeline has not been rerun against the full 2024–2025 cohorts. See [VALIDATION_STATUS.md](VALIDATION_STATUS.md) for the exact scope.
 
 ## Interpretation and limitations
 

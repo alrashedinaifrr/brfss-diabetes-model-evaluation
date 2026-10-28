@@ -49,8 +49,15 @@ The between-age discrimination term represents about 96.95% of this **particular
 ## Exploratory uncertainty
 A paired evaluation-sample bootstrap with 400 replicates estimated the gap reduction at 0.031479 (bootstrap SE 0.006693; percentile interval [0.018888, 0.044492]). A separate 100-replicate training-sample stability exercise yielded SD about 0.000443 for gap reduction. A quadrature combination produced approximate SE 0.006708 and interval [0.018331, 0.044627]. This combination assumes negligible covariance across the separately assessed sources and does not establish design-correct coverage for BRFSS.
 
+These intervals come from the exploratory V16 notebook work. The current clean runner does **not** reproduce or present them as design-valid confidence intervals. It reports weighted point estimates and exact algebraic decomposition only until the BRFSS PSU/stratum variance procedure has been validated.
+
+## Current reproducible pipeline
+The maintained entry point is `run_v11.py`. It compares median imputation, missingness indicators, complete-case training, a no-age ablation, and a sensitivity model whose logistic-regression fit uses normalized survey weights. It writes the all-eligible and common-complete-case metrics, weighted threshold/decision-curve scenarios, weighted BMI subgroup AUROC, exact age-pair AUROC and BMI-gap decompositions, weighted calibration deciles, four figures, and a run manifest containing input hashes and package versions.
+
+The no-age and full models are evaluated on the same all-eligible 2025 cohort. The subgroup analysis separately restricts to respondents with valid age group, BMI, and positive survey weight. The exact decomposition is descriptive; age removal is not a fairness intervention. The threshold table does not select a cutoff or represent clinical net benefit without a specified intervention and cost/benefit assumptions.
+
 ## Verification
-A separate GitHub ZIP extraction and execution in Colab produced training N=441,934 and evaluation N=342,539 and reproduced the primary weighted AUROC and Brier score to six decimals. Dependency imports and syntax checks passed. Two basic pytest tests passed. These checks establish a working core pipeline, not end-to-end replication of all V13–V16 notebook analyses.
+A separate GitHub ZIP extraction and execution in Colab produced training N=441,934 and evaluation N=342,539 and reproduced the primary weighted AUROC and Brier score to six decimals. The current working revision passes six local unit tests and a synthetic full-analysis smoke test that creates all four figures and serializes the output. The raw CDC XPT files are not in this repository, so the revised full analysis has not been run on the original cohorts here. These checks do not establish full reproduction of every V13–V16 notebook analysis.
 
 ## Limitations
 1. Survey design variance estimation remains uncertain, particularly because the apparent PSU identifiers may not represent actual multi-respondent sampling clusters in the extracted data.
