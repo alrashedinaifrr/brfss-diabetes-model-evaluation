@@ -20,7 +20,7 @@ The run manifest records SHA-256 hashes, row counts, Python version, and install
 
 ## Notebook scope
 
-`Health_Risk_Project_Analysis.ipynb` preserves the 73-cell Colab development history from V11 through V16.7. It contains cells dependent on uploaded archives, intermediate private predictions, R survey tools, and earlier outputs. It is not designed to run top-to-bottom in a fresh runtime. Use `run_v11.py` for the maintained clean pipeline; the notebook is an analysis history, not the canonical run command.
+`Health_Risk_Project_Analysis.ipynb` preserves the original 73-cell Colab development history from V11 through V16.7, including its prior analyses and figures. It contains cells dependent on uploaded archives, intermediate private predictions, R survey tools, and earlier outputs, so it is not designed to run top-to-bottom in a fresh runtime. The new `Health_Risk_Project_Colab.ipynb` provides a clean Colab workflow for the maintained `run_v11.py` pipeline; the original analysis notebook remains available as the project history.
 
 ## Boundaries
 

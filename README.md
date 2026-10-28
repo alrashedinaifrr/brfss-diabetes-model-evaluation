@@ -47,7 +47,7 @@ The following images are maintained at the repository root:
 
 ## Run in Google Colab
 
-Open [Health_Risk_Project_Analysis.ipynb](Health_Risk_Project_Analysis.ipynb) in Colab. The notebook clones the public repository, mounts Drive for the CDC XPT files, runs tests and analysis, displays figures, and downloads a results archive.
+Open [Health_Risk_Project_Colab.ipynb](Health_Risk_Project_Colab.ipynb) in Colab. The notebook clones the public repository, mounts Drive for the CDC XPT files, runs tests and analysis, displays figures, and downloads a results archive.
 
 ## Reproduce the core model
 
