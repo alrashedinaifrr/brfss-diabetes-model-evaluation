@@ -1,6 +1,6 @@
 # Diabetes Classification and Subgroup AUROC Analysis
 
-> **Scope of the work sample.** This repository documents the core BRFSS model evaluation and the age ablation. The application work sample also reports a later rerun on the original CDC files and a sensitivity analysis restricted to reporting areas shared by both survey years. Those later outputs are not included in this repository snapshot.
+> **Scope of the work sample.** The original BRFSS model evaluation is preserved below. The [audited 2026 research-portfolio extension](portfolio_2026/README.md) adds conditional survey-design AUROC/Brier confidence intervals, age-standardized BMI-group comparisons and sensitivity analyses, BMI-specific calibration, independent numerical cross-checks, and aggregate reproducibility tables. The original CDC respondent-level records are not redistributed.
 
 Reproducible applied statistical analysis of **self-reported prevalent diabetes** using the CDC Behavioral Risk Factor Surveillance System (BRFSS), with 2024 data for training and 2025 data for evaluation.
 
