@@ -33,8 +33,8 @@
     },
     {
       "path": "code/study1/tests/test_methods.py",
-      "sha256": "11b00152401a3b201659670b8797614fb557677b16851ed5c6dd9c93c876ab39",
-      "bytes": 5584
+      "sha256": "2d0830ffad063171dae8d3986e076e6d2720e5245712cbaf1e30157acd4d3bf7",
+      "bytes": 3400
     },
     {
       "path": "code/study1/verify_bmi_brier_bootstrap.py",

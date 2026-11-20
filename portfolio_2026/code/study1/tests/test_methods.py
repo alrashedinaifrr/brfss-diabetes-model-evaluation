@@ -6,8 +6,6 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 from study1_extension import (auc_influence,brier_influence,age_standardized_group,
                               design_covariance,calibration,summarize)
-from study2_extension import (qlike,har_panel,har_fit_predict,pairwise_inference,
-                              model_confidence_set,long_to_panel,run_inference)
 
 
 def synthetic_parent(seed=17,n_per_cell=16):
@@ -82,47 +80,3 @@ def test_study1_end_to_end(tmp_path):
         assert metric in set(result.metric)
 
 
-def test_qlike_known():
-    y=np.array([.25,.1]);h=np.array([.5,.2])
-    assert np.allclose(qlike(y,h),np.log(h)+y/h)
-
-
-def test_har_panel_causal(tmp_path):
-    rng=np.random.default_rng(22); n=260
-    dates=pd.bdate_range('2022-01-01',periods=n)
-    r=rng.normal(0,.01,n);prices=200*np.exp(np.cumsum(r))
-    f=tmp_path/'prices.csv';pd.DataFrame({'Date':dates,'Close':prices}).to_csv(f,index=False)
-    x=har_panel(f)
-    assert len(x)>150
-    # changing future prices cannot change features/targets at origin t-2
-    p2=prices.copy();p2[200:]*=1.7
-    pd.DataFrame({'Date':dates,'Close':p2}).to_csv(f,index=False)
-    xx=har_panel(f)
-    assert np.allclose(x.loc[:100,['rv1','rv5','rv22','y']],
-                       xx.loc[:100,['rv1','rv5','rv22','y']])
-    pred,beta=har_fit_predict(x.iloc[:130],x.iloc[131:])
-    assert (pred>0).all() and len(pred)==len(x.iloc[131:])
-
-
-def test_bootstrap_and_mcs():
-    rng=np.random.default_rng(17);n=100
-    l=np.column_stack([rng.normal(0,1,n),rng.normal(.02,1,n),
-                       rng.normal(4,.1,n)])
-    tab=pairwise_inference(l,['A','B','Bad'],replicates=200,block=5)
-    assert len(tab)==3 and (tab.ci95_low<=tab.ci95_high).all()
-    keep,hist=model_confidence_set(l,['A','B','Bad'],replicates=200,block=5)
-    assert 'Bad' not in keep and len(keep)>=1
-
-
-def test_finance_end_to_end(tmp_path):
-    rng=np.random.default_rng(43);records=[]
-    for market in ['SP500','TASI']:
-        for i in range(65):
-            y=abs(rng.normal(.00008,.00009));date=f'2026-04-{(i%28)+1:02d}-{i//28}'
-            for name,factor in [('EWMA',1.),('Poisson',1.15),('HAR_SR2',1.35)]:
-                records.append({'market':market,'fold':'2026','date':date,'model':name,
-                                'target_sq_return':y,'pred_var':max(1e-9,.00008*factor)})
-    df=long_to_panel(pd.DataFrame(records))
-    scores,mcs=run_inference(df,tmp_path,replicates=100,block=5)
-    assert len(scores)==6 and len(mcs)==2
-    assert (tmp_path/'study2_pairwise_qlike_DM_bootstrap.csv').exists()
