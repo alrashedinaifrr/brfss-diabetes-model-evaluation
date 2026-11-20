@@ -1,0 +1,105 @@
+{
+  "source": "Audited research portfolio release, November 2026",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "cde1b2423dd9abea746297fe81c225a908899c856341270e6d2921636e55d86f",
+      "bytes": 3440
+    },
+    {
+      "path": "code/study1/age_reference_CI_extension.py",
+      "sha256": "54fd2b3ccfe3132e496994ee2543bed0197502899106cc07f3b9516401808f56",
+      "bytes": 4835
+    },
+    {
+      "path": "code/study1/bootstrap_alternative_age_reference.py",
+      "sha256": "c599263c299adfe0f66552b2cef138682ea39284cf6a5b189837ca7a134fea2b",
+      "bytes": 3859
+    },
+    {
+      "path": "code/study1/independent_ci_verification.py",
+      "sha256": "4d940dc4b9b4e0f153dc42a1c032be919c8407548bfc089e79cb4d0748dedaff",
+      "bytes": 9856
+    },
+    {
+      "path": "code/study1/study1_extension.py",
+      "sha256": "67471582f0b963835db24bde6480429bfbc7af5e4e67632cdd3cb08f6980b517",
+      "bytes": 19160
+    },
+    {
+      "path": "code/study1/test_study1_reanalysis.py",
+      "sha256": "723c61a030b0eef339f005847cf57dbb2b9fc2c6e6ebd092a889cc43b8d2cc58",
+      "bytes": 2729
+    },
+    {
+      "path": "code/study1/tests/test_methods.py",
+      "sha256": "2d0830ffad063171dae8d3986e076e6d2720e5245712cbaf1e30157acd4d3bf7",
+      "bytes": 3400
+    },
+    {
+      "path": "code/study1/verify_bmi_brier_bootstrap.py",
+      "sha256": "83c3bc56272776c15476059682cc0c9cc43d00c77e98943990c0a11dec51bef4",
+      "bytes": 1795
+    },
+    {
+      "path": "code/study1/verify_calibration_and_bmi_CIs.py",
+      "sha256": "25c3433895d7600c32ed123ef9fad0cc2036dc5c9ac228a24992a5fb6f666c47",
+      "bytes": 5241
+    },
+    {
+      "path": "code/study1/verify_scoring_2026.py",
+      "sha256": "6f239bf83ceffb3b5eb2e575e48381348fed36a645333898c9ba8d53102153f4",
+      "bytes": 865
+    },
+    {
+      "path": "docs/study1_body.tex",
+      "sha256": "0bd46fe4470610754ab4d8434fad74fa1bb80b4cf8b9577a8fdcaf42f6829f46",
+      "bytes": 38888
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "3d2c84abdbe9484d6ce6f77cc1a842611a0b458d16622d9fd7b91b107ff718dd",
+      "bytes": 128
+    },
+    {
+      "path": "results/study1_alternative_age_reference_taylor_CIs.csv",
+      "sha256": "04bed3ffaac21fc5f53e1c9fe09ea38fdca2014f2ddf9173fe899a3c6e888fe7",
+      "bytes": 1167
+    },
+    {
+      "path": "results/study1_alternative_reference_bootstrap_crosscheck.csv",
+      "sha256": "eb55d051030314b589b4024bd2ac0589ea5aa0d671c59927f6723ec20cfea095",
+      "bytes": 1604
+    },
+    {
+      "path": "results/study1_bmi_calibration_decile_points.csv",
+      "sha256": "caba36fb32bd5c557888b2a0cc8b8d3e7a03f2fef0a947b54cda09d682459cf2",
+      "bytes": 4171
+    },
+    {
+      "path": "results/study1_estimates_and_CIs.csv",
+      "sha256": "65780bee1e99919e8ce0662bbc7586fe5321149ec43a77801ff467899273b11e",
+      "bytes": 5460
+    },
+    {
+      "path": "results/study1_independent/bmi_brier_bootstrap_crosschecks.csv",
+      "sha256": "4fae453601159bc7226e07e02744ea1e74deb5a3dbcc28c81337873ac9944ba2",
+      "bytes": 605
+    },
+    {
+      "path": "results/study1_independent/calibration_bootstrap_crosschecks.csv",
+      "sha256": "43c53eec85001cc30d735ef25efbd5f846e074f5f736e3701aad274136fd833b",
+      "bytes": 2318
+    },
+    {
+      "path": "results/study1_independent/independent_core_CI_crosschecks.csv",
+      "sha256": "202498bb24e20095a873549fa9648246e67423bc0c40de44cf6a3a1dd8615b48",
+      "bytes": 1632
+    },
+    {
+      "path": "results/study1_reference_CI_diagnostics.json",
+      "sha256": "12c7f3e9aca553233bd7fd582c3e36ea87293759a48be0d25c37ecc1d8d3b523",
+      "bytes": 1269
+    }
+  ]
+}

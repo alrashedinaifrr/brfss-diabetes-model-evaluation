@@ -1,0 +1,62 @@
+{
+  "low": {
+    "estimate_full": 0.011598916523940739,
+    "estimate_no_age": 0.02829188657856796,
+    "cov": [
+      [
+        9.983203396310656e-06,
+        2.0784915074539583e-05
+      ],
+      [
+        2.0784915074539583e-05,
+        6.130210350224654e-05
+      ]
+    ],
+    "design": {
+      "strata": 2090,
+      "psus": 356158,
+      "singleton_strata": 94,
+      "singleton_center": "overall PSU mean"
+    }
+  },
+  "high": {
+    "estimate_full": 0.007845977918938596,
+    "estimate_no_age": 0.0211277332255142,
+    "cov": [
+      [
+        1.4546591806173168e-05,
+        2.793466807842325e-05
+      ],
+      [
+        2.793466807842325e-05,
+        7.147536173753668e-05
+      ]
+    ],
+    "design": {
+      "strata": 2090,
+      "psus": 356158,
+      "singleton_strata": 94,
+      "singleton_center": "overall PSU mean"
+    }
+  },
+  "uniform": {
+    "estimate_full": -0.01664108232857997,
+    "estimate_no_age": -0.009278608775812436,
+    "cov": [
+      [
+        1.988440934639577e-05,
+        3.879217616533944e-05
+      ],
+      [
+        3.879217616533944e-05,
+        0.00010879798022912086
+      ]
+    ],
+    "design": {
+      "strata": 2090,
+      "psus": 356158,
+      "singleton_strata": 94,
+      "singleton_center": "overall PSU mean"
+    }
+  }
+}

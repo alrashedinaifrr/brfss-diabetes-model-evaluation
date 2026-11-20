@@ -1,0 +1,285 @@
+
+\begin{center}
+{\sffamily\bfseries\color{navy}\LARGE Study I. Diabetes Classification Across Survey Waves}\par
+\vspace{3pt}
+{\large Age standardization, survey-design uncertainty, and BMI-specific calibration}\par
+\vspace{8pt}
+{\large Naif Rawaf Hani Alrashedi}\par
+{\small Independent research portfolio for doctoral applications in Statistics}\par
+{\small Independent numerical CI validation $\mid$ 18 November 2026}\par
+\vspace{5pt}\textcolor{teal}{\rule{.78\linewidth}{1.1pt}}
+\end{center}
+\vspace{4pt}
+\begin{abstract}
+\noindent\textbf{Objective.} To distinguish the observed body mass index (BMI) subgroup discrimination gap from differences associated with age composition, and to quantify uncertainty in discrimination, probability error, and subgroup calibration. \textbf{Data and design.} Logistic models with and without age were fitted to 441,934 eligible respondents in the 2024 Behavioral Risk Factor Surveillance System (BRFSS) and evaluated on 342,539 eligible respondents in the 2025 wave. We used final survey weights for performance estimates and a paired, stratified primary-sampling-unit linearization for 95\% confidence intervals conditional on the fitted models. A separate implementation and stratified resampling were used to validate uncertainty calculations. \textbf{Results.} Omitting age lowered the survey-weighted AUROC by 0.1081 (95\% CI 0.1038--0.1124) and increased the weighted Brier score by 0.00955 (95\% CI 0.00913--0.00998). In the age-complete, extreme-BMI comparison, the original low-minus-high BMI AUROC gap was 0.06079 with age and 0.02931 without age. Harmonizing the age distribution of cases and controls separately between groups reduced the full-model gap to 0.00733 (95\% CI 0.00062--0.01403); the corresponding age-omitted gap was 0.02252 (95\% CI 0.00654--0.03850). Thus, the model change that reduced the unstandardized disparity increased the standardized disparity. Within BMI $\geq 30$, the Brier score rose from 0.1476 to 0.1630 and the jointly estimated calibration slope changed from 0.829 to 0.671 when age was omitted. \textbf{Interpretation.} A large share of the observed full-model discrimination gap is sensitive to the age case mix, but the standardized contrast depends on the reference distribution. The results do not establish a causal effect of age, a reduction in unfairness, or clinical utility.
+\end{abstract}
+\noindent\textbf{Keywords:} BRFSS; complex survey; AUROC; case mix; age standardization; calibration; Brier score; predictive fairness.
+
+\section{Introduction, research objectives, and hypotheses}
+Predictive models may discriminate differently across population groups even when their underlying scoring rule is unchanged. In complex surveys, differences in the distributions of cases, controls, and their predictors can affect observed AUROC. Age is particularly relevant in diabetes classification because its distribution varies across body mass index (BMI) categories. Consequently, a smaller observed difference in subgroup discrimination need not imply better prediction within the same age composition.
+
+We evaluate logistic classifiers fitted on 2024 BRFSS data using eligible 2025 survey respondents. The outcome is self-reported prevalent diabetes, not incident disease. Three evaluations address overall performance, age-standardized BMI discrimination, and risk calibration.
+
+\subsection{Research questions and analytical objectives}
+\begin{itemize}
+\item \textbf{RQ1 (overall predictive performance).} How does excluding age change survey-weighted AUROC and Brier score on the same evaluation sample?
+\item \textbf{RQ2 (BMI discrimination gaps).} How do differences in AUROC between BMI $<25$ and BMI $\geq30$ change across model specifications and after the two groups are placed on a common outcome-conditional age distribution?
+\item \textbf{RQ3 (probability quality).} How do survey-weighted Brier score and calibration intercept and slope vary across three observed BMI categories for the two models?
+\end{itemize}
+
+RQ2 uses two related but distinct analyses. A weighted case--control-pair decomposition describes the observed gap, whereas standardization estimates discrimination under a specified shared age distribution. The two approaches answer different questions; neither by itself identifies a causal mechanism.
+
+\subsection{Statistical hypotheses and evaluation criteria}\label{sec:study1_hypotheses}
+The null and alternative hypotheses follow directly from the performance contrasts defined by RQ1 and RQ2. Each contrast evaluates the same survey observations under two fixed fitted models. The reported paired intervals use the strata and primary sampling units of the 2025 survey, conditional on the 2024 model fits.
+
+\paragraph{RQ1: paired overall model performance.}
+Let $A_m$ and $B_m$ denote the population survey-weighted AUROC and Brier score
+of fitted model $m\in\{\mathrm{full},\mathrm{no\ age}\}$ on the 2025 evaluation
+population. Define $\Delta_A=A_{\rm full}-A_{\rm no\ age}$ and
+$\Delta_B=B_{\rm no\ age}-B_{\rm full}$. The corresponding reference tests are
+\begin{align}
+H_{0,1A}:\ \Delta_A=0 &\quad\text{versus}\quad H_{1,1A}:\ \Delta_A\neq0,\\
+H_{0,1B}:\ \Delta_B=0 &\quad\text{versus}\quad H_{1,1B}:\ \Delta_B\neq0.
+\end{align}
+Positive observed contrasts favor the age-inclusive model. For each contrast,
+the reported paired 95\% interval follows the same stratified-PSU Taylor
+linearization and retains observations from outside the analytic domain in the
+parent survey design with zero influence contribution.
+
+\paragraph{RQ2: age-standardized BMI gaps and their change.}
+Write $L$ for BMI $<25$ and $H$ for BMI $\geq30$. Let
+$G_m^{(r)}=A_{L,m}^{(r)}-A_{H,m}^{(r)}$, where $r$ is the \emph{same}
+outcome-conditional reference age distribution for both BMI groups, and define
+$D^{(r)}=G_{\rm full}^{(r)}-G_{\rm no\ age}^{(r)}$. For the primary
+pooled-extreme-BMI reference $r_0$, the two-sided reference hypotheses are
+\begin{align}
+H_{0,2A}:\ G_{\rm full}^{(r_0)}=0 &\quad\text{versus}\quad
+ H_{1,2A}:\ G_{\rm full}^{(r_0)}\neq0,\\
+H_{0,2B}:\ D^{(r_0)}=0 &\quad\text{versus}\quad
+ H_{1,2B}:\ D^{(r_0)}\neq0.
+\end{align}
+We also estimate $D^{(\mathrm{raw})}$ using each group's own observed age mix,
+with $H_{0,2C}:D^{(\mathrm{raw})}=0$ versus
+$H_{1,2C}:D^{(\mathrm{raw})}\neq0$.
+The low-BMI, high-BMI, and uniform age reference distributions serve as
+\emph{sensitivity analyses}. Their confidence intervals are pointwise rather
+than simultaneous or multiplicity-adjusted; each choice of $r$ defines a
+different reference-population estimand.
+
+\Needspace{8\baselineskip}
+\paragraph{RQ3: subgroup probability quality and calibration.}
+The weighted Brier scores and jointly fitted calibration
+$(\alpha_{g,m},\beta_{g,m})$ are presented as estimates with confidence intervals
+for each BMI group $g$ and model $m$. Perfect calibration corresponds to
+$(\alpha_{g,m},\beta_{g,m})=(0,1)$, but \emph{no joint Wald test of this
+composite calibration null was performed}. We therefore make descriptive
+comparisons against that reference rather than reporting a formal
+accept/reject decision for RQ3.
+
+\section{Data, sample construction, and prediction models}
+\subsection{Population and sample design}
+The input files are the CDC combined landline and cellular BRFSS public-use SAS transport files for 2024 and 2025 \citep{cdc2024,cdc2025}. Eligibility requires a positive final weight (\texttt{\_LLCPWT}) and \texttt{DIABETE4}=1 (reported diabetes) or 3 (reported no diabetes). For inference, all 356,158 survey-design records from the 2025 release are retained as parent records; observations outside the analytic domain have zero influence contributions.
+\begin{table}[H]\centering\caption{Cohort construction; reproduced from the original CDC transport files.}\begin{tabular}{lrr}\toprule
+Criterion & Training: 2024 & Evaluation: 2025 \\\midrule
+Source/parent records & 457,670 & 356,158 \\
+Eligible binary outcome and weight & 441,934 & 342,539 \\
+Excluded from analytic outcome & 15,736 & 13,619 \\
+Complete predictors & 380,516 & 298,869 \\
+Survey-weighted diabetes prevalence & 12.98\% & 13.02\% \\\bottomrule
+\end{tabular}\end{table}
+The original study notes non-identical reporting-area coverage across waves; a shared-area sensitivity check was reported previously. Outcome self-report, missing values and differences in geographical coverage limit transportability.
+
+\subsection{Model specification}
+The full model is L2-regularized logistic regression (\texttt{C=1}, \texttt{lbfgs}, 500 iterations maximum) with 13-category age group, numeric BMI, sex, exercise, history of smoking 100 cigarettes, and education. BMI outside 10--80 is treated as missing. The continuous variable is median-imputed and standardized; categorical predictors are mode-imputed and one-hot encoded. The age-omitted model uses the same protocol and predictors other than age. Both models are trained without survey weights using the 2024 eligible records, and both are evaluated with final 2025 survey weights on the same respondents.
+
+\section{Statistical estimands and variance estimation}
+\subsection{Weighted discrimination and probability error}
+For outcome $Y_i\in\{0,1\}$, predicted probability $p_i$ and positive final weight $w_i$, survey-weighted AUROC is
+\begin{equation}\label{eq:auc}
+\widehat A=\frac{\sum_{i:Y_i=1}\sum_{j:Y_j=0}w_iw_j\{I(p_i>p_j)+\tfrac12 I(p_i=p_j)\}}{\left(\sum_{i:Y_i=1}w_i\right)\left(\sum_{j:Y_j=0}w_j\right)}.
+\end{equation}
+The weighted Brier score is $\widehat B=\sum_iw_i(Y_i-p_i)^2/\sum_iw_i$. Paired RQ1 estimands are $\Delta_A=A_{\rm full}-A_{\rm no\ age}$ and $\Delta_B=B_{\rm no\ age}-B_{\rm full}$. Positive values favor the age-inclusive model for both comparisons.
+
+\subsection{Common age reference for BMI groups}
+In this analysis, the primary BMI comparison is limited to respondents with observed BMI and a valid age category, using the two extreme BMI groups: $L$ for BMI $<25$ and $H$ for BMI $\geq 30$. For each outcome $y\in\{0,1\}$ and age category $a\in\{1,\ldots,13\}$, the shared reference is the survey-weighted age distribution among the \emph{pooled extreme-BMI population separately by outcome}:
+\begin{equation}\label{eq:reference}
+\widehat r_y(a)=\frac{\sum_{i\in L\cup H}w_i I(Y_i=y,A_i=a)}{\sum_{i\in L\cup H}w_i I(Y_i=y)}.
+\end{equation}
+For respondent $i$ in group $g\in\{L,H\}$, define the standardized case or control weight
+\begin{equation}\label{eq:stdweight}
+\widetilde w_i^{(g)}=w_i\frac{\widehat r_{Y_i}(A_i)}{\sum_{j\in g}w_j I(Y_j=Y_i,A_j=A_i)}.
+\end{equation}
+Each group's standardized cases and controls sum to one separately; substituting these weights into Eq.~\eqref{eq:auc} gives $A_{g,m}^{\rm std}$. This harmonizes the age distributions \emph{within cases and within controls}; it does not force cases and controls to have the same age distribution and does not condition away all age-related discrimination. We report $G_m=A_{L,m}-A_{H,m}$ and $G_m^{\rm std}=A_{L,m}^{\rm std}-A_{H,m}^{\rm std}$ for model $m$, as well as contrasts across models. All 13 age strata have outcome support within each extreme-BMI group (minimum unweighted cell count: 66). Reference choices based on the lower-BMI group, higher-BMI group and a uniform 13-category age distribution are reported as descriptive sensitivity analyses.
+
+\subsection{Joint weighted calibration}
+Within each BMI category and each fixed set of predicted probabilities $p_i$, fit
+\begin{equation}\label{eq:cal}
+\mathrm{logit}\{\Pr(Y_i=1\mid p_i)\}=\alpha+\beta\,\mathrm{logit}(p_i),
+\end{equation}
+using survey-weighted binomial log-likelihood. The \emph{jointly estimated} calibration intercept $\alpha$ and slope $\beta$ are displayed with design-based intervals; perfect calibration corresponds to $(0,1)$. The intercept is not a calibration-in-the-large estimate with slope constrained to one. Estimated curves and coefficients describe this population and cannot by themselves justify a clinical intervention threshold.
+
+\subsection{Design-based uncertainty and verification}
+The survey-weighted AUROC uses weighted case--control concordance. For each observation, an influence contribution is calculated relative to opposite-class scores and divided by the appropriate class-weight total; for Brier, it is $w_i\{(Y_i-p_i)^2-\widehat B\}/\sum_jw_j$. Calibration influences are based on the weighted logistic score and observed information matrix. The standardized-AUROC influence includes both variation within age--outcome cells and estimation of the shared age reference in Eq.~\eqref{eq:reference}. These contributions are combined \emph{jointly} for paired contrasts, rather than treating model estimates as independent.
+
+For stratum $h$ and PSU $k$, let $U_{hk}$ be a vector of summed influence contributions, with $m_h$ observed PSUs. The with-replacement Taylor covariance is approximated by
+\begin{equation}\label{eq:variance}
+\widehat V=\sum_{h:m_h>1}\frac{m_h}{m_h-1}\sum_{k=1}^{m_h}(U_{hk}-\overline U_h)(U_{hk}-\overline U_h)^\top+\widehat V_{\rm singleton}.
+\end{equation}
+The variance calculation uses \texttt{\_STSTR} and \texttt{\_PSU}, with design records outside each subgroup retained at zero contribution. Of the 2,090 strata in 2025, 94 have a single observed PSU. Their contributions are centered at the overall PSU mean, following the same approximation as in the survey-design approximation \citep{cdcweights,lumley}. Confidence intervals use $\widehat\theta\pm1.96\,\mathrm{SE}$ and are \emph{conditional on both fitted 2024 models} (they do not incorporate model-fitting uncertainty). The reference distribution is estimated from the evaluation data and its first-order effect is included in the standardized-gap interval.
+
+\section{Results}
+\subsection{RQ1: overall discrimination and probability error}
+\begin{table}[htbp]\centering\caption{Overall survey-weighted performance in the 2025 BRFSS evaluation cohort ($n=342{,}539$).}\small
+\begin{tabular}{lccc}\toprule
+Model & AUROC & 95\% CI & Brier score (95\% CI) \\\midrule
+With age & 0.795546 & [0.791541, 0.799551] & 0.098758 [0.097322, 0.100193] \\
+Without age & 0.687464 & [0.682363, 0.692564] & 0.108311 [0.106836, 0.109786] \\\bottomrule
+\end{tabular}\end{table}
+The paired AUROC advantage for including age was $0.108083$ (95\% CI [0.103778, 0.112387]). Excluding age increased the weighted Brier score by $0.009553$ (95\% CI [0.009131, 0.009976]). These contrasts use the paired survey design and not separate confidence intervals for unrelated observations. Both estimates reproduce the original report's point estimates to the published precision.
+
+\subsection{RQ2: raw and standardized BMI discrimination gaps}
+\begin{table}[htbp]\centering\caption{Extreme-BMI AUROC gaps, before and after common age standardization (valid age and BMI; $n_L=97{,}914$, $n_H=100{,}215$).}\small
+{\footnotesize\setlength{\tabcolsep}{2pt}\resizebox{\linewidth}{!}{\begin{tabular}{llrrr}\toprule
+Model & Age distribution & Low BMI AUROC & High BMI AUROC & Gap [95\% CI] \\\midrule
+With age & Observed & 0.806129 & 0.745342 & 0.060787 [0.048977, 0.072597] \\
+With age & Common reference & 0.769711 & 0.762386 & 0.007325 [0.000616, 0.014034] \\
+Without age & Observed & 0.650246 & 0.620937 & 0.029308 [0.014439, 0.044177] \\
+Without age & Common reference & 0.645148 & 0.622631 & 0.022517 [0.006538, 0.038495] \\\bottomrule
+\end{tabular}}}\end{table}
+The full-model observed gap is $0.053462$ (95\% CI [0.043574, 0.063350]) greater than its standardized counterpart; equivalently, the standardized point-estimate gap is approximately 88\% smaller. For the age-omitted model, the observed-minus-standardized gap is only $0.006792$ (95\% CI [0.001525, 0.012058]). The observed-gap reduction after removing age is $G_{\rm full}-G_{\rm no\ age}=0.031479$ (95\% CI [0.018374, 0.044583]). In contrast, for the common-reference comparison, $G_{\rm full}^{\rm std}-G_{\rm no\ age}^{\rm std}=\mathbf{-0.015191}$ (95\% CI [\textbf{-0.025980}, \textbf{-0.004403}]). Thus, removing age narrows the observed gap but \emph{widens} the standardized gap under the specified pooled case/control age reference. The result is a descriptive statement about rank discrimination and a specific reference population, not an improvement or worsening of clinical fairness in itself.
+\begin{figure}[htbp]\centering\includegraphics[width=.87\linewidth]{figures/study1/fig1_raw_vs_standardized_gaps.png}\caption{Paired design-based 95\% confidence intervals for low-minus-high BMI AUROC gaps. The primary age reference is pooled separately among cases and controls.}\end{figure}
+The exact case--control-pair accounting decomposition assigned 0.000205 to same-age discrimination, 0.058936 to between-age-category discrimination and 0.001646 to pair-composition terms, summing to the original full-model observed gap of 0.060787. These are algebraic contributions, not causal shares. The reduction under age harmonization supports the importance of case-mix composition, but neither decomposition nor age harmonization identifies the mechanism generating the group difference.
+
+\subsection{Original same-/different-age pair decomposition}
+The descriptive decomposition provides a complementary check to the shared-reference analysis. For one fitted model within each BMI group, partition the survey-weighted case--control pairs into pairs drawn from the same age category and pairs drawn from different age categories. If $p_{g,k}$ is the pair-weight share and $A_{g,k}$ is the conditional concordance for group $g$ and pair type $k$, then
+\begin{equation}\label{eq:pair-decomposition-restored}
+A_g=\sum_{k\in\{\mathrm{same},\mathrm{different}\}}p_{g,k}A_{g,k},\qquad
+A_L-A_H=\sum_k\!\bigl\{\bar p_k(A_{L,k}-A_{H,k})+\bar A_k(p_{L,k}-p_{H,k})\bigr\}.
+\end{equation}
+The full-model pair decomposition of the observed 0.060787 low-minus-high BMI AUROC gap yielded 0.000205 from same-age pair concordance, 0.058936 from between-age pair concordance and 0.001646 from pair composition; the reconstruction error was below $10^{-15}$. The between-age term therefore accounts for about 97\% of that \emph{observed-score accounting identity}. It is not an estimate of the causal contribution of age, and it does not replace the standardized-age estimand reported above.
+\begin{table}[ht]\centering\small
+\caption{Exact accounting decomposition of the full-model observed BMI gap.}
+\begin{tabular}{lr}\toprule
+Term & Contribution to low-minus-high AUROC\\\midrule
+Same-age category discrimination & 0.000205\\
+Between-age category discrimination & 0.058936\\
+Pair-composition term & 0.001646\\\midrule
+Total & 0.060787\\\bottomrule\end{tabular}\end{table}
+
+\subsection{Reference-distribution sensitivity with design-based intervals}
+Three alternative reference constructions were compared with the pooled outcome-specific age reference: the case/control age distribution of the lower-BMI group, that of the higher-BMI group, and fixed equal weight across all 13 age categories within each outcome class. The first two alternative references are estimated from the 2025 survey and propagate their reference-weight uncertainty in the first-order influence function. The uniform reference is fixed and requires no estimated-reference influence term. In every case, the entire 2025 public-use parent design is retained for PSU/stratum variance estimation. These are post hoc sensitivity targets, not independent confirmatory tests.
+\begin{table}[htbp]\centering\footnotesize
+\caption{Sensitivity of the standardized low-minus-high BMI AUROC gap to the outcome-conditional age reference. All displayed intervals are first-order paired survey-design 95\% intervals, conditional on fixed 2024 fits.}\label{tab:age-references-expanded}
+\setlength{\tabcolsep}{4pt}\begin{tabular}{llrl}\toprule
+Common age reference & Model & Gap & 95\% Taylor CI \\\midrule
+Pooled extreme-BMI (primary) & With age & +0.007325 & [+0.000616, +0.014034] \\
+Pooled extreme-BMI (primary) & Without age & +0.022517 & [+0.006538, +0.038495] \\
+Lower-BMI reference & With age & +0.011599 & [+0.005406, +0.017792] \\
+Lower-BMI reference & Without age & +0.028292 & [+0.012946, +0.043638] \\
+Higher-BMI reference & With age & +0.007846 & [+0.000371, +0.015321] \\
+Higher-BMI reference & Without age & +0.021128 & [+0.004558, +0.037698] \\
+Uniform 13-category reference & With age & -0.016641 & [-0.025381, -0.007901] \\
+Uniform 13-category reference & Without age & -0.009279 & [-0.029722, +0.011165] \\
+\bottomrule\end{tabular}\end{table}
+The gap from the age-inclusive model is positive under the pooled, lower-BMI and higher-BMI reference distributions; it is negative under equal age-category weights. The uniform full-model interval, [-0.025381, -0.007901], excludes zero; the corresponding age-omitted interval, [-0.029722, +0.011165], does not. This reversal is a statement about different target populations and should \emph{not} be interpreted as evidence that a uniform age mix is the correct population or that changing age has a causal fairness effect.
+\begin{table}[htbp]\centering\small
+\caption{Paired standardized gap contrast, with-age minus without-age, across alternative references. Negative estimates mean the gap is larger after age omission.}\label{tab:age-reference-contrasts}
+\begin{tabular}{lrl}\toprule Reference & Difference & 95\% Taylor CI\\\midrule
+Pooled extreme-BMI (primary) & -0.015191 & [-0.025980, -0.004403]\\
+Lower-BMI reference & -0.016693 & [-0.027377, -0.006009] \\
+Higher-BMI reference & -0.013282 & [-0.024044, -0.002519] \\
+Uniform 13-category reference & -0.007362 & [-0.021373, +0.006648] \\
+\bottomrule\end{tabular}\end{table}
+The full-minus-no-age contrast under the uniform reference includes zero, even though its full-model gap is negative. Inference about differences in the observed BMI gap is therefore \emph{reference-dependent}; pointwise reference-specific confidence intervals are not joint intervals across all target choices.
+\begin{figure}[htbp]\centering\includegraphics[width=.87\linewidth]{figures/study1/age_reference_95ci_forest.pdf}
+\caption{With-age BMI AUROC gap under four age standardization references; the horizontal bars are nominal survey-design 95\% confidence intervals. Fixed 2024 predictions and the 2025 public-use survey-design approximation are held constant.}\label{fig:age-reference-forest}\end{figure}
+\paragraph{Independent bootstrap cross-check.} To verify the new reference-dependent uncertainty rather than relying only on the analytic expressions, an independent stratified PSU rescaled bootstrap recomputed each standardized AUROC using the \texttt{scikit-learn} weighted ROC routine. It used 149 replicates (with $m_h-1$ sampled PSUs rescaled by $m_h/(m_h-1)$ in multi-PSU strata, singleton PSUs held fixed). Across nine alternative-reference estimands, the ratios of bootstrap to Taylor standard errors ranged from 0.9746 to 1.0550. These relatively few Monte Carlo resamples are a \emph{diagnostic} for variance implementation, not a high-precision alternative basis for final interval endpoints. The source archive contains all bootstrap replicates, pointwise reference-specific intervals, and seeds. The R \texttt{survey} package has not been run for this analysis; such a check would provide further independent software validation.
+
+\subsection{RQ3: probability error and calibration by BMI subgroup}
+\begin{table}[htbp]\centering\caption{Survey-weighted Brier score by BMI group. Positive paired differences indicate higher error without age.}\small
+\begin{tabular}{lrrrl}\toprule
+Group ($n$) & With age & Without age & Difference & 95\% CI of difference \\\midrule
+BMI $<25$ (99,255) & 0.055912 & 0.060726 & 0.004815 & [0.004450, 0.005180] \\
+$25\leq$ BMI $<30$ (110,986) & 0.095569 & 0.104116 & 0.008547 & [0.007973, 0.009121] \\
+BMI $\geq30$ (101,092) & 0.147618 & 0.163039 & 0.015420 & [0.014240, 0.016601] \\\bottomrule
+\end{tabular}\end{table}
+The Brier increase after removing age is positive in every BMI category. Absolute Brier scores are not on an equal-difficulty scale across groups because outcome prevalence and case mix differ; within-group paired comparisons are therefore the primary probability-error contrasts.
+\begin{figure}[htbp]\centering\includegraphics[width=.89\linewidth]{figures/study1/fig2_brier_by_bmi.png}\caption{Within-BMI survey-weighted probability errors. Lower is better; group prevalence affects absolute score levels.}\end{figure}
+\begin{table}[htbp]\centering\caption{Joint calibration intercept $\alpha$ and slope $\beta$ by BMI subgroup (weighted 2025 evaluation). Brackets contain design-based 95\% CIs.}\small
+\begin{tabular}{llcc}\toprule
+BMI group & Parameter & With age & Without age \\\midrule
+$<25$ & Intercept & 0.166 [0.020, 0.312] & 0.106 [-0.130, 0.343] \\
+$<25$ & Slope & 1.116 [1.052, 1.180] & 1.248 [1.141, 1.355] \\
+$25$--$<30$ & Intercept & 0.347 [0.250, 0.445] & 0.335 [0.159, 0.512] \\
+$25$--$<30$ & Slope & 1.182 [1.128, 1.235] & 1.249 [1.157, 1.342] \\
+$\geq30$ & Intercept & -0.125 [-0.182, -0.069] & -0.507 [-0.581, -0.434] \\
+$\geq30$ & Slope & 0.829 [0.792, 0.865] & 0.671 [0.617, 0.726] \\\bottomrule
+\end{tabular}\end{table}
+The calibration coefficients differ from their ideal values in several domains. In particular, the high-BMI group's slope is below one with age and substantially below one after age omission. Because intercept and slope are estimated jointly, an isolated intercept should not be read as a direct mean risk bias at all predicted probabilities. Calibration by risk level and threshold-specific consequences remain important follow-on analyses.
+\begin{figure}[htbp]\centering\includegraphics[width=.90\linewidth]{figures/study1/fig4_calibration_slopes.png}\caption{BMI-specific calibration slopes with 95\% design-based intervals. The dashed line indicates the ideal slope of one.}\end{figure}
+\begin{figure}[htbp]\centering
+\includegraphics[width=.99\linewidth]{figures/study1/study1_bmi_reliability_curves.pdf}
+\caption{Descriptive, survey-weighted reliability diagrams within each observed BMI category. Predictions were sorted into ten equal-count groups \emph{separately for each fitted model}; points show weighted mean predicted risk and weighted observed prevalence. The diagonal denotes perfect calibration. These plotted curves do not have survey-design bands and are complementary to the jointly fitted intercept/slope intervals, not a replacement for them.}\label{fig:bmi-reliability}\end{figure}
+
+
+\subsection{Independent numerical audit of confidence intervals}
+An independent check reproduced the 2024 fitting and 2025 scoring from the original CDC transport files; weighted AUROC also matched an independent \texttt{scikit-learn} calculation. A second, vectorized implementation of stratum-centered PSU covariance reproduced the archived first-order Taylor standard errors for the paired overall AUROC and Brier contrasts, both age-standardized gaps, and their paired difference to numerical precision. Of the 2,090 survey strata, 94 contain a single PSU; the specified singleton-stratum correction contributes only 0.014--0.041\% of variance for these five contrasts. This does not establish exact design-unbiased coverage, but rules out a material discrepancy due to the singleton rule for these comparisons.
+
+As a separate nonlinear sensitivity check, we recomputed each statistic from fixed predictions in \textbf{399} stratified PSU rescaled bootstrap samples. In each stratum with $m_h>1$ observed PSUs, $m_h-1$ PSUs were sampled with replacement and their counts multiplied by $m_h/(m_h-1)$; singleton-stratum records were left fixed. Each replicate re-estimated the common case/control age reference before recalculating the standardized AUROC. Hence bootstrap intervals check the nonlinear calculations but are not exact equivalents of the singleton-adjusted Taylor intervals.
+\begin{table}[htbp]\centering\caption{Independent uncertainty verification: nominal 95\% Taylor intervals and empirical 2.5th--97.5th bootstrap percentiles (399 resamples).}
+{\footnotesize\setlength{\tabcolsep}{4pt}\begin{tabular}{lcc}\toprule
+Paired or standardized estimand & Taylor 95\% CI & Bootstrap percentile interval \\\midrule
+Overall AUROC: full minus no-age & [0.103778, 0.112387] & [0.103939, 0.112878] \\
+Overall Brier: no-age minus full & [0.009131, 0.009976] & [0.009143, 0.009976] \\
+Standardized BMI gap: full & [0.000616, 0.014034] & [0.000871, 0.014267] \\
+Standardized BMI gap: no-age & [0.006538, 0.038495] & [0.006266, 0.037806] \\
+Standardized gap: full minus no-age & [-0.025980, -0.004403] & [-0.025517, -0.005113] \\\bottomrule
+\end{tabular}}\end{table}
+The three BMI-domain paired Brier differences were independently re-evaluated with \textbf{699} stratified PSU bootstrap samples, producing percentile intervals of [0.004474, 0.005187] for BMI $<25$, [0.008005, 0.009106] for BMI 25--$<30$, and [0.014168, 0.016648] for BMI $\geq30$. These closely track the Taylor intervals in the preceding table of subgroup Brier results.
+
+The twelve subgroup calibration coefficients were independently refitted using weighted binomial \texttt{statsmodels} GLMs and a separate Newton solver. Point-estimate discrepancies were below $10^{-8}$. Independent score/Hessian calculations reproduced the archived Taylor standard errors, while \textbf{299} nonlinear PSU bootstrap refits yielded standard-error ratios relative to Taylor between 0.969 and 1.097. The largest discrepancy occurred for the full-model high-BMI calibration slope (Taylor [0.792, 0.865] versus bootstrap [0.787, 0.871]); it does not change the substantive interpretation. These finite-bootstrap checks are sensitivity analyses, not multiplicity-adjusted intervals or prospective validation.
+
+\textbf{Verification boundary.} This audit was independently programmed in Python; it did \emph{not} execute the R \texttt{survey} package. All intervals remain conditional on the fixed 2024 fits, use the public-use 2025 design approximation, and are exploratory because the wave was revisited during development. Scripts, checks, random seeds, and summary CSV outputs are included in the reproducibility archive.
+
+\subsection{Sensitivity to training weights, missingness, and geographic coverage}
+Additional specification analyses assess sensitivity to training weights, missing predictor values, and geographic coverage. Their point estimates characterize separate fits and evaluation populations; confidence intervals for these supplementary specifications are not included in the primary analysis. Survey-weighted training had a weighted AUROC of 0.7953 and Brier score of 0.0987, compared with 0.7955 and 0.0988 for the primary unweighted fit. On a common complete-predictor evaluation subset of 298,869 respondents, median-imputation, BMI-missingness-indicator and complete-case-training analyses had AUROCs of 0.799073, 0.799066 and 0.799084, respectively. Restriction to the 49 shared reporting areas (427,311 eligible 2024 records; 337,103 eligible 2025 records) gave an AUROC of 0.795599 and Brier score of 0.098427 after refitting. These sensitivity results are descriptive and do not supply confidence intervals for the age-standardized estimand. Threshold analyses illustrate decision scenarios only, not validated clinical cutoffs.
+
+\section{Discussion}
+The age-standardized analysis changes how the study's principal empirical result should be interpreted. The raw 0.0608 AUROC gap between BMI extremes is largely reduced by outcome-conditional harmonization of the age distribution; it is not equivalent to a directly comparable gap after case-mix standardization. In particular, the conclusion that excluding age narrows the BMI gap applies to the \emph{observed} case mixes only. On the shared pooled-age reference it increases the low-minus-high BMI difference from 0.0073 to 0.0225. An inference framed exclusively around the apparent 51.8\% reduction can therefore be misleading without the adjusted contrast and the performance deterioration in both groups.
+
+The paired RQ1 confidence intervals quantify the overall deterioration when age is removed. Group-specific Brier and calibration analyses also demonstrate that the ranking gap is only one component of model evaluation: the age-omitted model worsens mean squared probability error in every BMI domain, with the largest absolute increase in the BMI $\geq30$ group. These results make indiscriminate removal of age a questionable strategy for improving predictive equity; this conclusion concerns the measured prediction metrics only.
+
+Survey-weighted AUROC and Brier score answer distinct questions. AUROC measures ranking under each group's case/control distribution; Brier evaluates the accuracy of probability values while mixing model error and outcome prevalence. A fully decision-relevant evaluation would additionally require calibration across risk levels, operational thresholds, intervention benefits/harms and a suitable clinical target rather than a cross-sectional self-report outcome.
+
+\section{Limitations and claims boundary}
+\begin{itemize}
+\item \textbf{Exploratory reanalysis.} The 2025 evaluation wave was examined repeatedly during development, and additional inferential contrasts were formulated after this inspection. Nominal 95\% intervals are not independent confirmatory validation on untouched data, and multiple exploratory contrasts have been examined.
+\item \textbf{Conditional inference.} Variances reflect 2025 evaluation-sample uncertainty for fitted 2024 models. They omit training uncertainty, data preprocessing uncertainty, between-wave drift and potential misreporting of diabetes.
+\item \textbf{Survey-design approximation.} Variances use public-use strata and PSUs with a with-replacement Taylor approximation and a specific singleton-stratum treatment; they are not replicate-weight variances.
+\item \textbf{Standardization target.} A common outcome-conditional age distribution is a target-population choice, not a causal adjustment. The four-reference sensitivity and the new design-based intervals demonstrate a direction reversal under a uniform target population. Small age--outcome cells can make extreme target choices unstable.
+\item \textbf{Group definition.} Subgroup Brier/calibration use observed BMI ($n=311{,}333$ across three groups); standardized AUROC further requires observed age and compares the two extreme-BMI groups. These sample definitions must not be conflated.
+\item \textbf{Generalizability and decisions.} The outcome is self-reported prevalent diabetes, survey geographical coverage changes across waves, and no external clinical validation, causal fairness result or patient benefit is demonstrated.
+\end{itemize}
+
+\section{Reproducibility and data provenance}
+\noindent\textbf{Code and data availability.} \href{https://github.com/alrashedinaifrr/brfss-diabetes-model-evaluation}{BRFSS Diabetes Model Evaluation on GitHub}. The accompanying reproducibility archive identifies the version-specific scripts and CDC input provenance.\par\smallskip
+The exact input files supplied for this reanalysis and their SHA-256 hashes are:
+\begin{itemize}
+\item 2024 \texttt{LLCP2024.XPT}:\\ {\footnotesize\texttt{7d53cf088f858e02bcc029a51cf0408cc68f40a0ebeb02a3c0f73058aab36b1c}}.
+\item 2025 \texttt{LLCP2025.XPT}:\\ {\footnotesize\texttt{d99262f8854f018a600c3538ee78e4308569af700abe6b92b36180336c24dec2}}.
+\end{itemize}
+The computation uses Python with pandas 2.2.3, NumPy 2.3.5, SciPy 1.17.0 and scikit-learn 1.8.0; both model fits and the survey-domain results were rerun on the original XPT data. The primary 2025 point estimates reproduce to at least the precision published in the portfolio. The parent design comprises 356,158 records, 2,090 strata and 356,158 PSUs, including 94 single-PSU strata. The 0.031479 paired gap reduction was independently reproduced with a 95\% CI of [0.018374, 0.044583], consistent with the rounded [0.0184, 0.0446]. The supplementary training-weight, missingness, and shared-area point estimates were not independently re-estimated during the confidence-interval verification. The accompanying private research archive includes executable analysis code, the targeted Study I tests, independent PSU-bootstrap and Taylor-audit code, aggregate output CSVs, diagrams, and the alternative-reference uncertainty and calibration-decile tables; the separately supplied raw-data supplement preserves the original, unchanged CDC public-use ZIP archives with SHA-256 provenance, while the scored respondent-level survey parent is not redistributed.
+
+\begingroup\small\sloppy\setlength{\parskip}{5pt}
+\begin{thebibliography}{99}
+\setlength{\itemsep}{5pt}\setlength{\bibhang}{1.3em}
+\bibitem[Centers for Disease Control and Prevention(2025)]{cdc2024} Centers for Disease Control and Prevention. (2025). \emph{2024 BRFSS survey data and documentation} [Data set]. \url{https://www.cdc.gov/brfss/annual_data/annual_2024.html}.
+\bibitem[Centers for Disease Control and Prevention(2026a)]{cdc2025} Centers for Disease Control and Prevention. (2026a). \emph{2025 BRFSS survey data and documentation} [Data set]. \url{https://www.cdc.gov/brfss/annual_data/annual_2025.html}.
+\bibitem[Centers for Disease Control and Prevention(2026b)]{cdcweights} Centers for Disease Control and Prevention. (2026b). \emph{Complex sampling weights and preparing 2025 BRFSS module data for analysis}. \url{https://www.cdc.gov/brfss/annual_data/2025/pdf/Complex-Sampling-Weights-and-Preparing-Module-Data-for-Analysis-2025-508.pdf}.
+\bibitem[Lumley(2004)]{lumley} Lumley, T. (2004). Analysis of complex survey samples. \emph{Journal of Statistical Software}, 9(8), 1--19. \url{https://doi.org/10.18637/jss.v009.i08}.
+\bibitem[Pfohl et~al.(2021)]{pfohl} Pfohl, S. R., Foryciarz, A., \& Shah, N. H. (2021). An empirical characterization of fair machine learning for clinical risk prediction. \emph{Journal of Biomedical Informatics}, 113, 103621. \url{https://doi.org/10.1016/j.jbi.2020.103621}.
+\bibitem[Steyerberg et~al.(2010)]{steyerberg} Steyerberg, E. W., Vickers, A. J., Cook, N. R., Gerds, T., Gonen, M., Obuchowski, N., Pencina, M. J., \& Kattan, M. W. (2010). Assessing the performance of prediction models: A framework for traditional and novel measures. \emph{Epidemiology}, 21(1), 128--138. \url{https://doi.org/10.1097/EDE.0b013e3181c30fb2}.
+\bibitem[Vergouwe et~al.(2010)]{vergouwe} Vergouwe, Y., Moons, K. G. M., \& Steyerberg, E. W. (2010). External validity of risk models: Use of benchmark values to disentangle a case-mix effect from incorrect coefficients. \emph{American Journal of Epidemiology}, 172(8), 971--980. \url{https://doi.org/10.1093/aje/kwq223}.
+\bibitem[Yao et~al.(2015)]{yao} Yao, W., Li, Z., \& Graubard, B. I. (2015). Estimation of ROC curve with complex survey data. \emph{Statistics in Medicine}, 34(8), 1293--1303. \url{https://doi.org/10.1002/sim.6405}.
+\end{thebibliography}
+\endgroup
