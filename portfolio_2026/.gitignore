@@ -1,0 +1,16 @@
+# Keep CDC respondent-level data and locally scored records out of this public repository.
+# These files are downloaded or reconstructed locally; only aggregate results are tracked.
+code/study1/data/
+code/study1/outputs/
+results/recomputed_study1/
+data/
+*.XPT
+*.xpt
+*.joblib
+*.pkl
+*.pickle
+*.parquet
+*.feather
+*.zip
+__pycache__/
+.pytest_cache/
